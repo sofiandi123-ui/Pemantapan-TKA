@@ -1,2 +1,591 @@
-# Pemantapan-TKA
-Latihan Soal Pemantapan TKA Bahasa Inggris
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Latihan Soal TKA Bahasa Inggris (Advanced/C1)</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --success-bg: #f0fdf4;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --warning-bg: #fffbeb;
+            --warning-border: #fef3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background: var(--primary-hover); }
+
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #15803d; }
+        .btn-secondary { background: #64748b; }
+        .btn-secondary:hover { background: #475569; }
+
+        /* Question Elements */
+        .passage-box {
+            background: #f1f5f9;
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .badge {
+            background: #dbeafe;
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .option-item {
+            margin-bottom: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        .option-label input {
+            margin-right: 12px;
+            margin-top: 4px;
+        }
+
+        /* Classification/Matching Table */
+        .matching-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .matching-table th, .matching-table td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .matching-table th { background: #f8fafc; }
+
+        /* Feedback & Explanation Box */
+        .explanation-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: 8px;
+        }
+
+        .explanation-box h4 {
+            color: #b45309;
+            margin-bottom: 10px;
+        }
+
+        .explanation-section {
+            margin-bottom: 12px;
+        }
+
+        .explanation-section h5 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #78350f;
+            margin-bottom: 4px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* Status Colors for Feedback */
+        .status-correct {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success) !important;
+            color: #14532d;
+        }
+
+        .status-incorrect {
+            background-color: var(--danger-bg) !important;
+            border-color: var(--danger) !important;
+            color: #7f1d1d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>TKA English Practice Test</h1>
+        <p>Tingkat Kesulitan: Sukar (Advanced/C1 Level)</p>
+    </header>
+
+    <!-- FORM REGISTRASI -->
+    <div id="setup-card" class="card">
+        <h2>Data Peserta & Pengaturan Ujian</h2>
+        <form id="start-form" style="margin-top: 15px;">
+            <div class="form-group">
+                <label for="student-name">Nama Lengkap</label>
+                <input type="text" id="student-name" required placeholder="Masukkan nama Anda">
+            </div>
+            <div class="form-group">
+                <label for="student-class">Kelas / Asal Sekolah</label>
+                <input type="text" id="student-class" required placeholder="Contoh: XII MIPA 1 / Umum">
+            </div>
+            <div class="form-group">
+                <label for="package-select">Pilih Paket Soal</label>
+                <select id="package-select">
+                    <option value="1">Paket 1: Humanities & Social Sciences</option>
+                    <option value="2">Paket 2: Technology & Artificial Intelligence</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="mode-select">Pilih Mode Pengerjaan</label>
+                <select id="mode-select">
+                    <option value="instant">Mode Latihan (Instant Feedback & Pembahasan per Soal)</option>
+                    <option value="exam">Mode Ujian (Pembahasan & Nilai di Akhir)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">Mulai Pengerjaan</button>
+        </form>
+    </div>
+
+    <!-- AREA PENGERJAAN SOAL -->
+    <div id="quiz-card" class="card hidden">
+        <div class="question-meta">
+            <span id="question-number" class="badge">Soal 1 dari 2</span>
+            <span id="question-type" class="badge" style="background: #e0e7ff; color: #4338ca;">Single Answer</span>
+        </div>
+
+        <div id="passage-container" class="passage-box">
+            <!-- Teks bacaan dimasukkan secara dinamis -->
+        </div>
+
+        <div id="question-text" style="font-weight: 600; font-size: 1.1rem; margin-bottom: 15px;">
+            <!-- Pertanyaan dimasukkan secara dinamis -->
+        </div>
+
+        <div id="options-container">
+            <!-- Opsi jawaban dimasukkan secara dinamis -->
+        </div>
+
+        <!-- Tombol khusus mode Instant Feedback -->
+        <div id="check-answer-container" class="hidden" style="margin-top: 15px;">
+            <button id="btn-check" class="btn btn-secondary" onclick="checkCurrentAnswer()">Cek Jawaban</button>
+        </div>
+
+        <!-- Box Pembahasan (Muncul otomatis di Instant Mode atau di Akhir) -->
+        <div id="explanation-container" class="explanation-box hidden">
+            <h4>Pembahasan & Trik Cepat</h4>
+            <div class="explanation-section">
+                <h5>Ringkasan / Terjemahan Teks</h5>
+                <p id="exp-translation">-</p>
+            </div>
+            <div class="explanation-section">
+                <h5>Analisis Jawaban</h5>
+                <p id="exp-analysis">-</p>
+            </div>
+            <div class="explanation-section">
+                <h5>Trik Cepat & Pola Soal</h5>
+                <p id="exp-trick" style="font-weight: 500; color: #92400e;">-</p>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="btn-prev" class="btn btn-secondary" onclick="navigateQuestion(-1)">Sebelumnya</button>
+            <button id="btn-next" class="btn" onclick="navigateQuestion(1)">Berikutnya</button>
+            <button id="btn-submit" class="btn btn-success hidden" onclick="finishQuiz()">Selesai & Lihat Rekap</button>
+        </div>
+    </div>
+
+    <!-- REKAP HASIL -->
+    <div id="result-card" class="card hidden">
+        <h2>Rekap Hasil Ujian</h2>
+        <div style="margin: 20px 0; background: #f8fafc; padding: 15px; border-radius: 8px;">
+            <p><strong>Nama:</strong> <span id="res-name"></span></p>
+            <p><strong>Kelas:</strong> <span id="res-class"></span></p>
+            <p><strong>Skor Akhir:</strong> <span id="res-score" style="font-size: 1.4rem; color: var(--primary); font-weight: bold;"></span></p>
+        </div>
+        <button class="btn" onclick="location.reload()">Ulangi Ujian</button>
+    </div>
+</div>
+
+<script>
+// DATABASE SOAL SAMPLE (Paket 1 & Paket 2 C1 Level)
+const questionBank = {
+    1: [
+        {
+            type: "single", // Single Answer
+            passage: "<b>Passage:</b><br>The paradigm shift toward renewable energy integration is frequently heralded as an infallible panacea for environmental degradation. However, nuanced techno-economic analyses reveal severe complexities. Grid stability is precarious under high penetration of intermittent sources such as solar and wind. Without high-capacity utility-scale storage technologies, which remain cost-prohibitive, grid resilience is compromised, forcing reliance on legacy fossil-fuel peaker plants to offset sudden drops in generation.",
+            question: "What is the author's primary stance regarding the transition to renewable energy?",
+            options: [
+                "A. Completely supportive, asserting it solves all ecological challenges unconditionally.",
+                "B. Pragmatic and cautious, highlighting critical technological and infrastructural limitations.",
+                "C. Strongly opposed, advocating for the permanent retention of fossil-fuel reliance.",
+                "D. Indifferent, viewing the debate as purely speculative without practical implications.",
+                "E. Optimistic that storage costs will drop rapidly in the immediate future."
+            ],
+            correct: 1, // Index B
+            explanation: {
+                translation: "Meskipun transisi energi terbarukan sering dianggap sebagai solusi mutlak, analisis teknis-ekonomi menunjukkan kompleksitas serius terkait stabilitas jaringan daya dan tingginya biaya penyimpanan.",
+                analysis: "Opsi B benar karena penulis bersikap pragmatis/hati-hati dengan menunjukkan kelemahan teknis (intermitensi dan biaya penyimpanan). Opsi A terlalu ekstrem ('panacea for environmental degradation' dikritik di teks). Opsi C salah karena penulis tidak menolak sepenuhnya, melainkan menyoroti kendalanya.",
+                trick: "<b>Pola Soal Tone/Attitude:</b> Hindari pilihan jawaban yang menggunakan kata-kata ekstrem (seperti <i>completely, unconditionally, permanent</i>). Cari kata sifat bernuansa seimbang/analitis seperti <i>pragmatic, cautious, qualified support</i>."
+            }
+        },
+        {
+            type: "multiple", // Multiple Answers
+            passage: "<b>Passage:</b><br>Algorithm-driven recommendation engines shape modern information consumption. While they optimize user engagement by tailoring content to individual preferences, they inadvertently foster confirmation bias and socio-political polarization. By isolating users inside 'echo chambers', these systems restrict exposure to counter-attitudinal viewpoints, thereby diluting public discourse and compromising democratic deliberation.",
+            question: "Which of the following statements accurately reflect the negative consequences of recommendation engines mentioned in the passage? (Select MORE THAN ONE answer)",
+            options: [
+                "A. They intensify political polarization by limiting diverse perspectives.",
+                "B. They completely eliminate user interest in digital media platforms.",
+                "C. They reinforce users' pre-existing beliefs through echo chambers.",
+                "D. They enhance the quality of democratic debate through tailored content."
+            ],
+            correct: [0, 2], // Index A dan C
+            explanation: {
+                translation: "Meski meningkatkan engagement, algoritma rekomendasi memicu bias konfirmasi dan polarisasi dengan mengisolasi pengguna di 'echo chambers' serta membatasi pandangan yang berbeda.",
+                analysis: "A Benar (disebutkan: 'foster socio-political polarization'). C Benar (disebutkan: 'confirmation bias' dan 'echo chambers'). B Salah (tidak disebutkan bahwa minat pengguna hilang). D Salah (kontradiktif, teks menyatakan 'diluting public discourse').",
+                trick: "<b>Pola Soal Complex Multiple Choice:</b> Verifikasi setiap pernyataan secara independen dengan kalimat di teks. Opsi yang menggunakan klausa kontradiktif dari isi teks pasti salah."
+            }
+        },
+        {
+            type: "classification", // Classification/Matching
+            passage: "<b>Passage:</b><br>Statement 1: Synthetic biology offers unprecedented potential to engineer crops resistant to extreme climate events.<br>Statement 2: Unregulated proliferation of genetically modified organisms may inadvertently trigger irreversible ecological disruptions.",
+            question: "Classify each statement based on the perspective it represents:",
+            categories: ["Optimistic / Technological Promise", "Critical / Environmental Risk"],
+            items: [
+                { statement: "Synthetic biology enables climate-resilient crop engineering.", correctCategory: 0 },
+                { statement: "Unregulated GMO deployment risks irreversible ecological damage.", correctCategory: 1 }
+            ],
+            explanation: {
+                translation: "Pernyataan 1 berfokus pada potensi positif biologi sintetis untuk pertanian, sedangkan Pernyataan 2 menyoroti risiko kerusakan ekologis akibat pemanfaatan GMO tanpa regulasi.",
+                analysis: "Item 1 mencerminkan janji teknologi (Optimistic) karena membahas daya tahan iklim. Item 2 mencerminkan risiko lingkungan (Critical) karena menekankan potensi kerusakan ekologis.",
+                trick: "<b>Pola Soal Classification:</b> Identifikasi kata kunci bernuansa positif (contoh: <i>potential, resilient</i>) vs kata kunci bernuansa risiko/negatif (contoh: <i>unregulated, disruption, risks</i>)."
+            }
+        }
+    ],
+    2: [
+        {
+            type: "single",
+            passage: "<b>Passage:</b><br>The proliferation of Generative AI has ignited intense debate regarding intellectual property rights. Training models on copyrighted artistic works without explicit consent raises profound ethical and legal questions concerning authorship and fair use.",
+            question: "What is the central conflict discussed in the text?",
+            options: [
+                "A. High costs of training AI models.",
+                "B. Copyright issues in AI training datasets.",
+                "C. Lack of interest in generative art.",
+                "D. Complete replacement of human artists.",
+                "E. Decreasing speed of AI processing."
+            ],
+            correct: 1,
+            explanation: {
+                translation: "Penggunaan karya berhak cipta untuk melatih model AI tanpa izin menimbulkan masalah hukum dan etika terkait hak cipta dan 'fair use'.",
+                analysis: "Opsi B tepat karena teks berfokus pada masalah hak cipta ('intellectual property rights', 'copyrighted artistic works'). Opsi A, C, D, E tidak relevan dengan fokus utama.",
+                trick: "<b>Pola Soal Main Idea:</b> Fokus pada kalimat pertama/paragraf awal yang mendefinisikan isu utama sebelum perincian argumen."
+            }
+        }
+    ]
+};
+
+// GLOBAL VARIABLES
+let currentPackage = 1;
+let currentMode = "instant";
+let currentQuestionIdx = 0;
+let userAnswers = {};
+let checkedQuestions = {}; // Menyimpan status soal yang sudah di-cek pada mode instant
+
+// DOM ELEMENTS
+const setupCard = document.getElementById('setup-card');
+const quizCard = document.getElementById('quiz-card');
+const resultCard = document.getElementById('result-card');
+const startForm = document.getElementById('start-form');
+
+startForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    currentPackage = document.getElementById('package-select').value;
+    currentMode = document.getElementById('mode-select').value;
+    
+    setupCard.classList.add('hidden');
+    quizCard.classList.remove('hidden');
+    
+    // Tampilkan tombol "Cek Jawaban" jika di mode Instant
+    if (currentMode === 'instant') {
+        document.getElementById('check-answer-container').classList.remove('hidden');
+    } else {
+        document.getElementById('check-answer-container').classList.add('hidden');
+    }
+    
+    currentQuestionIdx = 0;
+    loadQuestion(currentQuestionIdx);
+});
+
+function loadQuestion(index) {
+    const questions = questionBank[currentPackage];
+    const q = questions[index];
+    
+    // Header Info
+    document.getElementById('question-number').innerText = `Soal ${index + 1} dari ${questions.length}`;
+    document.getElementById('question-type').innerText = q.type.toUpperCase();
+    document.getElementById('passage-container').innerHTML = q.passage;
+    document.getElementById('question-text').innerText = q.question;
+
+    const optContainer = document.getElementById('options-container');
+    optContainer.innerHTML = '';
+
+    // Render Berdasarkan Tipe Soal
+    if (q.type === 'single') {
+        q.options.forEach((opt, idx) => {
+            const isChecked = userAnswers[index] === idx ? 'checked' : '';
+            optContainer.innerHTML += `
+                <div class="option-item">
+                    <label class="option-label" id="opt-label-${idx}">
+                        <input type="radio" name="q_opt" value="${idx}" ${isChecked} onchange="saveAnswer(${idx})">
+                        <span>${opt}</span>
+                    </label>
+                </div>`;
+        });
+    } else if (q.type === 'multiple') {
+        const saved = userAnswers[index] || [];
+        q.options.forEach((opt, idx) => {
+            const isChecked = saved.includes(idx) ? 'checked' : '';
+            optContainer.innerHTML += `
+                <div class="option-item">
+                    <label class="option-label" id="opt-label-${idx}">
+                        <input type="checkbox" name="q_opt" value="${idx}" ${isChecked} onchange="saveMultipleAnswer(${idx})">
+                        <span>${opt}</span>
+                    </label>
+                </div>`;
+        });
+    } else if (q.type === 'classification') {
+        let tableHTML = `<table class="matching-table"><thead><tr><th>Statement</th><th>Category</th></tr></thead><tbody>`;
+        const saved = userAnswers[index] || {};
+        q.items.forEach((item, itemIdx) => {
+            tableHTML += `<tr>
+                <td>${item.statement}</td>
+                <td>
+                    <select onchange="saveClassificationAnswer(${itemIdx}, this.value)">
+                        <option value="">-- Pilih --</option>
+                        ${q.categories.map((cat, catIdx) => `
+                            <option value="${catIdx}" ${saved[itemIdx] == catIdx ? 'selected' : ''}>${cat}</option>
+                        `).join('')}
+                    </select>
+                </td>
+            </tr>`;
+        });
+        tableHTML += `</tbody></table>`;
+        optContainer.innerHTML = tableHTML;
+    }
+
+    // Reset atau Tampilkan Feedback jika sudah pernah di-cek (pada Mode Instant)
+    const expBox = document.getElementById('explanation-container');
+    if (currentMode === 'instant' && checkedQuestions[index]) {
+        showExplanation(q);
+    } else {
+        expBox.classList.add('hidden');
+    }
+
+    // Navigasi Button Control
+    document.getElementById('btn-prev').classList.toggle('hidden', index === 0);
+    if (index === questions.length - 1) {
+        document.getElementById('btn-next').classList.add('hidden');
+        document.getElementById('btn-submit').classList.remove('hidden');
+    } else {
+        document.getElementById('btn-next').classList.remove('hidden');
+        document.getElementById('btn-submit').classList.add('hidden');
+    }
+}
+
+// SIMPAN JAWABAN USER
+function saveAnswer(val) { userAnswers[currentQuestionIdx] = val; }
+function saveMultipleAnswer(val) {
+    if (!userAnswers[currentQuestionIdx]) userAnswers[currentQuestionIdx] = [];
+    const arr = userAnswers[currentQuestionIdx];
+    const idx = arr.indexOf(val);
+    if (idx > -1) arr.splice(idx, 1);
+    else arr.push(val);
+}
+function saveClassificationAnswer(itemIdx, val) {
+    if (!userAnswers[currentQuestionIdx]) userAnswers[currentQuestionIdx] = {};
+    userAnswers[currentQuestionIdx][itemIdx] = val;
+}
+
+// FITUR INSTANT FEEDBACK
+function checkCurrentAnswer() {
+    const questions = questionBank[currentPackage];
+    const q = questions[currentQuestionIdx];
+    
+    if (userAnswers[currentQuestionIdx] === undefined) {
+        alert("Silakan pilih jawaban terlebih dahulu!");
+        return;
+    }
+
+    checkedQuestions[currentQuestionIdx] = true;
+    showExplanation(q);
+}
+
+function showExplanation(q) {
+    const expBox = document.getElementById('explanation-container');
+    document.getElementById('exp-translation').innerText = q.explanation.translation;
+    document.getElementById('exp-analysis').innerText = q.explanation.analysis;
+    document.getElementById('exp-trick').innerHTML = q.explanation.trick;
+    expBox.classList.remove('hidden');
+
+    // Visual Status untuk Single Answer
+    if (q.type === 'single') {
+        q.options.forEach((_, idx) => {
+            const label = document.getElementById(`opt-label-${idx}`);
+            if (label) {
+                label.classList.remove('status-correct', 'status-incorrect');
+                if (idx === q.correct) label.classList.add('status-correct');
+                else if (userAnswers[currentQuestionIdx] === idx) label.classList.add('status-incorrect');
+            }
+        });
+    }
+}
+
+function navigateQuestion(direction) {
+    currentQuestionIdx += direction;
+    loadQuestion(currentQuestionIdx);
+}
+
+function finishQuiz() {
+    const questions = questionBank[currentPackage];
+    let score = 0;
+
+    questions.forEach((q, idx) => {
+        const uAns = userAnswers[idx];
+        if (q.type === 'single' && uAns === q.correct) score++;
+        else if (q.type === 'multiple' && Array.isArray(uAns)) {
+            if (JSON.stringify(uAns.sort()) === JSON.stringify(q.correct.sort())) score++;
+        }
+        else if (q.type === 'classification' && uAns) {
+            let correctCount = 0;
+            q.items.forEach((item, itemIdx) => {
+                if (uAns[itemIdx] == item.correctCategory) correctCount++;
+            });
+            if (correctCount === q.items.length) score++;
+        }
+    });
+
+    const finalScore = Math.round((score / questions.length) * 100);
+
+    quizCard.classList.add('hidden');
+    resultCard.classList.remove('hidden');
+
+    document.getElementById('res-name').innerText = document.getElementById('student-name').value;
+    document.getElementById('res-class').innerText = document.getElementById('student-class').value;
+    document.getElementById('res-score').innerText = `${finalScore} / 100`;
+}
+</script>
+</body>
+</html>
